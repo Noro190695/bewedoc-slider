@@ -1,4 +1,4 @@
-export class Bewedoc {
+export default class Bewedoc {
     
     constructor(config){
         this.transform = 0;
@@ -159,14 +159,7 @@ export class Bewedoc {
     
 }
 
-// new Bewedoc({
-//     el: '.slider',
-//     arrow: true,
-//     dots: true,
-//     animation: {
-//         type: 'linear',
-//         speed: 0.3
-//     }
-    
-// })
+
+
+
 
