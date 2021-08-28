@@ -1,10 +1,9 @@
 .bewedoc{
-    width: 300px;
-    height: 300px;
+    width: 100%;
+    height: 100%;
     display: flex;
     position: relative;
     overflow: hidden;
-    border: 1px solid red;
     box-sizing: border-box;
 
     &__items{
@@ -94,8 +93,12 @@
 }
 
 .prev{
-   animation: prev .3s linear ; 
+    animation: prev .3s linear;
 }
+.next{
+    animation: next .3s linear;
+    
+ }
 
 @keyframes prev {
     from{
@@ -106,9 +109,6 @@
     }
 }
 
-.next{
-    animation: next .3s linear ; 
- }
  
  @keyframes next {
      

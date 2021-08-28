@@ -6,6 +6,7 @@ export class Bewedoc {
         this.config = config
         this.getChangeElement()
         this.items = document.querySelectorAll('.bewedoc__children');
+        this.sliderContainer = document.querySelector('.bewedoc__items');
         this.prev = document.querySelector('.bewedoc__arrow-prev');
         this.next = document.querySelector('.bewedoc__arrow-next');
     }
@@ -21,7 +22,7 @@ export class Bewedoc {
         const dots = this.createDots(children)
         this.slider.classList.add('bewedoc');
         arrow?  this.slider.innerHTML += arrow: null;
-        dots?  this.slider.append(dots): null
+        dots?  this.slider.append(dots): null;
         this.prevClick(children)
         this.nextClick(children)
 
@@ -67,28 +68,35 @@ export class Bewedoc {
     }
 
     changeSlider = (elements,to) => {
-        const  sliderItems = document.querySelector('.bewedoc__items');
-        
-        sliderItems.innerHTML = '';
-        sliderItems.append(...elements)
+        this.sliderContainer.innerHTML = '';
+        this.sliderContainer.append(...elements)
+        this.sliderContainerStyle()
         if (to === 'next') {
-            sliderItems.classList.add('next')
+            this.sliderContainer.classList.add('next')
         }
         if (to === 'prev') {
-            sliderItems.classList.add('prev')
+            this.sliderContainer.classList.add('prev')
         }
         if (this.config.dots) {
-            this.addRomoveDothActiveClass(sliderItems.children[0].dataset.count)
+            this.addRomoveDothActiveClass(this.sliderContainer.children[0].dataset.count)
         }
        
         setTimeout(() => {
-            sliderItems.classList.remove('next');
-            sliderItems.classList.remove('prev')
+            this.sliderContainer.classList.remove('next');
+            this.sliderContainer.classList.remove('prev')
             this.prev.disabled = false;
             this.next.disabled = false;
         },300)
         
     }
+
+    sliderContainerStyle() {
+        this.sliderContainer.style = 
+            ` animation-duration: ${this.config.animation.speed}s;
+              animation-timing-function: ${this.config.animation.type};
+            `
+    }
+    
     addRomoveDothActiveClass = (count) => {
         const dots = document.querySelectorAll('.bewedoc_dot');
         dots.forEach(dot => {
@@ -99,32 +107,33 @@ export class Bewedoc {
     }
     
     changeDotClick = (e) => {
+        
         const activeCount = +e.target.dataset.dotCount;
-        const slider = document.querySelector('.bewedoc__items');
         let tmpItems = [...this.items];
-        slider.innerHTML = ''
-        slider.append(...this.items);
+        this.sliderContainer.innerHTML = ''
+        this.sliderContainer.append(...tmpItems);
         this.transform = activeCount;
-        slider.style = `transform: translateX(-${100 * this.transform}%)`
+        this.transformSlider(activeCount)
         this.addRomoveDothActiveClass(activeCount)
-        tmpItems.forEach((item, i) => {
-            if (+item.dataset.count === activeCount) {
-                let j = tmpItems.splice(i, 1)
-                
-                tmpItems.unshift(...j)
-                
-            }
-            
-        })
-        this.nextClick(tmpItems)
+        let findId = tmpItems.findIndex(item => +item.dataset.count === activeCount)
+        let spliceArray = tmpItems.splice(findId, tmpItems.length - 1);
+        tmpItems = [...spliceArray, ...tmpItems]
+        this.nextClick(tmpItems);
         this.prevClick(tmpItems)
-        
-        
-        
+       
+    }
+    transformSlider = (size = false) => {
+        if (size) {
+            this.sliderContainer.style = `transform: translateX(-${100 * size}%); transition: transform ${this.config.animation.speed}s;`
+        }else{
+            
+           this.sliderContainer.style = `transform: translateX(0);  transition: transform ${this.config.animation.speed}s;`  
+        }   
     }
     prevClick = (children) => {
         const prev = document.querySelector('.bewedoc__arrow-prev')
         prev.addEventListener('click',e => {
+            this.transformSlider()
             let first = children.pop()
             children.unshift(first);
             this.changeSlider(children, 'prev');
@@ -132,19 +141,17 @@ export class Bewedoc {
             this.next.disabled = true;
         })
     }
-
-    nextClick = (children) => {
-        children = [...children]
-       
+   
+    nextClick = (children) => {        
         const next = document.querySelector('.bewedoc__arrow-next')
-        next.addEventListener('click',e => {
-            console.log(...children);
+        
+        next.addEventListener('click',e => {  
+            this.transformSlider()
             let first = children.shift()
             children.push(first);
             this.changeSlider(children, 'next');
             this.prev.disabled = true;
             this.next.disabled = true;
-            console.log(...children);
               
         })
     }
@@ -152,9 +159,14 @@ export class Bewedoc {
     
 }
 
-new Bewedoc({
-    el: '.slider',
-    arrow: true,
-    dots: true
-})
+// new Bewedoc({
+//     el: '.slider',
+//     arrow: true,
+//     dots: true,
+//     animation: {
+//         type: 'linear',
+//         speed: 0.3
+//     }
+    
+// })
 
