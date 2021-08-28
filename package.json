@@ -1,6 +1,6 @@
 {
-  "name": "bewedoc-slider",
-  "version": "1.1.6",
+  "name": "slider-bewedoc",
+  "version": "1.0.1",
   "description": "good slider slide show",
   "main": "index.js",
   "scripts": {

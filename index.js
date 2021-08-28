@@ -5,10 +5,10 @@ export class Bewedoc {
         this.slider = document.querySelector(config.el)
         this.config = config
         this.getChangeElement()
-        this.items = document.querySelectorAll('.bewedoc__children');
-        this.sliderContainer = document.querySelector('.bewedoc__items');
-        this.prev = document.querySelector('.bewedoc__arrow-prev');
-        this.next = document.querySelector('.bewedoc__arrow-next');
+        this.items = this.slider.querySelectorAll('.bewedoc__children');
+        this.sliderContainer = this.slider.querySelector('.bewedoc__items');
+        this.prev = this.slider.querySelector('.bewedoc__arrow-prev');
+        this.next = this.slider.querySelector('.bewedoc__arrow-next');
         
     }
 
@@ -107,7 +107,7 @@ export class Bewedoc {
     }
     
     addRomoveDothActiveClass = (count) => {
-        const dots = document.querySelectorAll('.bewedoc_dot');
+        const dots = this.slider.querySelectorAll('.bewedoc_dot');
         dots.forEach(dot => {
             +dot.dataset.dotCount === +count?
             dot.classList.add('active-dot'):
@@ -145,7 +145,7 @@ export class Bewedoc {
         }   
     }
     prevClick = (children) => {
-        const prev = document.querySelector('.bewedoc__arrow-prev');
+        const prev = this.slider.querySelector('.bewedoc__arrow-prev');
             prev.addEventListener('click',e => {
             this.transformSlider()
             let first = children.pop()
@@ -157,7 +157,7 @@ export class Bewedoc {
     }
    
     nextClick = (children) => {        
-        const next = document.querySelector('.bewedoc__arrow-next')
+        const next = this.slider.querySelector('.bewedoc__arrow-next')
         
         next.addEventListener('click',e => {  
             this.transformSlider()
@@ -270,7 +270,7 @@ class Style {
             -webkit-transition: .3s;
             transition: .3s;
             border-radius: 3px;
-            background-image: url("../img/next.svg");
+            background-image: url("https://cdn4.iconfinder.com/data/icons/evil-icons-user-interface/64/arrow_right2-128.png");
             background-size: cover;
           }
           

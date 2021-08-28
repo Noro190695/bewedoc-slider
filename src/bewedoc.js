@@ -1,5 +1,3 @@
-
-
 class Bewedoc {
     
     constructor(config){
@@ -7,10 +5,11 @@ class Bewedoc {
         this.slider = document.querySelector(config.el)
         this.config = config
         this.getChangeElement()
-        this.items = document.querySelectorAll('.bewedoc__children');
-        this.sliderContainer = document.querySelector('.bewedoc__items');
-        this.prev = document.querySelector('.bewedoc__arrow-prev');
-        this.next = document.querySelector('.bewedoc__arrow-next');
+        this.items = this.slider.querySelectorAll('.bewedoc__children');
+        this.sliderContainer = this.slider.querySelector('.bewedoc__items');
+        this.prev = this.slider.querySelector('.bewedoc__arrow-prev');
+        this.next = this.slider.querySelector('.bewedoc__arrow-next');
+        
     }
 
     getChangeElement = () => {
@@ -23,10 +22,18 @@ class Bewedoc {
         const arrow = this.createArrow();
         const dots = this.createDots(children)
         this.slider.classList.add('bewedoc');
-        arrow?  this.slider.innerHTML += arrow: null;
-        dots?  this.slider.append(dots): null;
-        this.prevClick(children)
-        this.nextClick(children)
+        if (arrow) {
+            this.slider.innerHTML += arrow;
+            this.prevClick(children)
+            this.nextClick(children)
+        }
+        if (dots) {
+            this.slider.append(dots)
+        }
+        if (this.config.autoPlay) {
+            this.autoPlay(children)
+        }
+        
 
     }
 
@@ -94,13 +101,13 @@ class Bewedoc {
 
     sliderContainerStyle() {
         this.sliderContainer.style = 
-            ` animation-duration: ${this.config.animation.speed}s;
-              animation-timing-function: ${this.config.animation.type};
+            ` animation-duration: ${this.config.animation?this.config.animation.speed:.3}s;
+              animation-timing-function: ${this.config.animation ? this.config.animation.type : 'linear'};
             `
     }
     
     addRomoveDothActiveClass = (count) => {
-        const dots = document.querySelectorAll('.bewedoc_dot');
+        const dots = this.slider.querySelectorAll('.bewedoc_dot');
         dots.forEach(dot => {
             +dot.dataset.dotCount === +count?
             dot.classList.add('active-dot'):
@@ -120,21 +127,26 @@ class Bewedoc {
         let findId = tmpItems.findIndex(item => +item.dataset.count === activeCount)
         let spliceArray = tmpItems.splice(findId, tmpItems.length - 1);
         tmpItems = [...spliceArray, ...tmpItems]
-        this.nextClick(tmpItems);
-        this.prevClick(tmpItems)
+        if (this.config.arrow) {
+            this.nextClick(tmpItems);
+            this.prevClick(tmpItems);
+        }
+        if (this.config.autoPlay) {
+            this.autoPlay(tmpItems)
+        }
        
     }
     transformSlider = (size = false) => {
         if (size) {
-            this.sliderContainer.style = `transform: translateX(-${100 * size}%); transition: transform ${this.config.animation.speed}s;`
+            this.sliderContainer.style = `transform: translateX(-${100 * size}%); transition: transform ${this.config.animation?this.config.animation.speed:.3}s;`
         }else{
             
-           this.sliderContainer.style = `transform: translateX(0);  transition: transform ${this.config.animation.speed}s;`  
+           this.sliderContainer.style = `transform: translateX(0);  transition: transform ${this.config.animation?this.config.animation.speed:.3}s;`  
         }   
     }
     prevClick = (children) => {
-        const prev = document.querySelector('.bewedoc__arrow-prev')
-        prev.addEventListener('click',e => {
+        const prev = this.slider.querySelector('.bewedoc__arrow-prev');
+            prev.addEventListener('click',e => {
             this.transformSlider()
             let first = children.pop()
             children.unshift(first);
@@ -145,7 +157,7 @@ class Bewedoc {
     }
    
     nextClick = (children) => {        
-        const next = document.querySelector('.bewedoc__arrow-next')
+        const next = this.slider.querySelector('.bewedoc__arrow-next')
         
         next.addEventListener('click',e => {  
             this.transformSlider()
@@ -157,10 +169,21 @@ class Bewedoc {
               
         })
     }
+    autoPlay = (children) => {
+       const interval =  setInterval(() => {
+            this.transformSlider()
+            let first = children.shift()
+            children.push(first);
+            this.changeSlider(children, 'next');
+            this.prev.disabled = true;
+            this.next.disabled = true;
+        },this.config.delay? this.config.delay: 3000)
+
+       
+    }
 
     
 }
-
 class Style {
     static add = () => {
         let style = document.createElement('style');
@@ -247,7 +270,7 @@ class Style {
             -webkit-transition: .3s;
             transition: .3s;
             border-radius: 3px;
-            background-image: url("../img/next.svg");
+            background-image: url("https://cdn4.iconfinder.com/data/icons/evil-icons-user-interface/64/arrow_right2-128.png");
             background-size: cover;
           }
           
@@ -352,7 +375,7 @@ class Style {
           return style
     }
 }
-document.head.append(Style.add());
+document.head.append(Style.add())
 
 // new Bewedoc({
 //     el: '.slider',
