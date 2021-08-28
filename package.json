@@ -7,8 +7,5 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Norayr Kokhlikyan",
-  "license": "ISC",
-  "dependencies": {
-    "bewedoc-slider": "^1.0.4"
-  }
+  "license": "ISC"
 }
