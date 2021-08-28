@@ -1,4 +1,4 @@
-export default class Bewedoc {
+export class Bewedoc {
     
     constructor(config){
         this.transform = 0;
